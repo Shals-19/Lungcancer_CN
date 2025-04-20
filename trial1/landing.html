@@ -21,6 +21,8 @@
 <body>
   <h1>Welcome to the Communication App</h1>
   <div>
+    <input type="text" id="username" placeholder="Enter your username" />
+    <br />
     <button onclick="navigateTo('textchat.html')">Text Chat</button>
     <button onclick="navigateTo('videochat.html')">Video Chat</button>
     <button onclick="navigateTo('voicecall.html')">Voice Call</button>
@@ -28,7 +30,13 @@
 
   <script>
     function navigateTo(file) {
-      window.location.href = file;
+      const username = document.getElementById('username').value.trim();
+      if (!username) {
+        alert('Please enter a username!');
+        return;
+      }
+      // Append the username as a query parameter to the URL
+      window.location.href = `${file}?username=${encodeURIComponent(username)}`;
     }
   </script>
 </body>

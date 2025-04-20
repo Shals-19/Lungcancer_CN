@@ -1,5 +1,10 @@
 const socket = io();
 
+// Get the username from the URL query parameters
+const urlParams = new URLSearchParams(window.location.search);
+const username = urlParams.get('username');
+
+// Display the username when the user joins
 const startBtn = document.getElementById('startCall');
 const hangUpBtn = document.getElementById('hangUp');
 const chatBox = document.getElementById('chatBox');
@@ -31,12 +36,12 @@ startBtn.onclick = async () => {
   const offer = await localConnection.createOffer();
   await localConnection.setLocalDescription(offer);
 
-  socket.emit('offer', offer);
+  socket.emit('offer', { offer, username });
 };
 
 sendBtn.onclick = () => {
   const msg = messageInput.value;
-  dataChannel.send(msg);
+  dataChannel.send(`${username}: ${msg}`);
   chatBox.innerHTML += `<p><b>You:</b> ${msg}</p>`;
   messageInput.value = '';
 };
@@ -49,13 +54,13 @@ hangUpBtn.onclick = () => {
 // Handle Incoming Data Channel
 function setupDataChannel() {
   dataChannel.onmessage = e => {
-    chatBox.innerHTML += `<p><b>Peer:</b> ${e.data}</p>`;
+    chatBox.innerHTML += `<p>${e.data}</p>`;
   };
 }
 
 // --- Socket.io Signaling ---
 
-socket.on('offer', async offer => {
+socket.on('offer', async ({ offer, username: remoteUsername }) => {
   localConnection = new RTCPeerConnection({
     iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
   });
@@ -84,11 +89,13 @@ socket.on('offer', async offer => {
   const answer = await localConnection.createAnswer();
   await localConnection.setLocalDescription(answer);
 
-  socket.emit('answer', answer);
+  socket.emit('answer', { answer, username });
+  chatBox.innerHTML += `<p><i>${remoteUsername} joined the call</i></p>`;
 });
 
-socket.on('answer', async answer => {
+socket.on('answer', async ({ answer, username: remoteUsername }) => {
   await localConnection.setRemoteDescription(new RTCSessionDescription(answer));
+  chatBox.innerHTML += `<p><i>${remoteUsername} joined the call</i></p>`;
 });
 
 socket.on('ice-candidate', async candidate => {
