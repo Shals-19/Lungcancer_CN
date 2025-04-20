@@ -35,11 +35,18 @@ startBtn.onclick = async () => {
 };
 
 sendBtn.onclick = () => {
-  const msg = messageInput.value;
-  dataChannel.send(msg);
-  chatBox.innerHTML += `<p><b>You:</b> ${msg}</p>`;
-  messageInput.value = '';
+  const msg = messageInput.value.trim();
+  if (msg === '') return;
+
+  if (dataChannel && dataChannel.readyState === "open") {
+    dataChannel.send(msg);
+    chatBox.innerHTML += `<p><b>You:</b> ${msg}</p>`;
+    messageInput.value = '';
+  } else {
+    alert("Data channel is not open yet. Try again in a few seconds.");
+  }
 };
+
 
 hangUpBtn.onclick = () => {
   localConnection.close();

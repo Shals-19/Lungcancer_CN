@@ -1,0 +1,29 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f5f5f5;
+  }
+  
+  #chat-box {
+    border: 1px solid #ccc;
+    height: 200px;
+    overflow-y: scroll;
+    padding: 10px;
+    background: white;
+    margin-bottom: 10px;
+  }
+  
+  #messageInput {
+    width: 70%;
+    padding: 8px;
+  }
+  
+  #sendBtn {
+    padding: 8px 16px;
+    margin-left: 5px;
+  }
+  
+  #audio-section {
+    margin-bottom: 20px;
+  }
+  
