@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 24px;
+    }
+    #chatContainer {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+    }
+    #chatBox {
+      flex: 1;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: white;
+      margin-bottom: 20px;
+    }
+    #chatBox p {
+      margin: 5px 0;
+    }
+    #chatBox .username {
+      font-weight: bold;
+      color: #4CAF50;
+    }
+    #messageInputContainer {
+      display: flex;
+      gap: 10px;
+    }
+    #messageInput {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    #sendMessage {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #sendMessage:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <header>Text Chat</header>
+  <div id="chatContainer">
+    <div id="chatBox"></div>
+    <div id="messageInputContainer">
+      <input type="text" id="messageInput" placeholder="Type your message here..." />
+      <button id="sendMessage">Send</button>
+    </div>
+  </div>
+  <script src="./scr_text.js"></script>
+</body>
+</html>
