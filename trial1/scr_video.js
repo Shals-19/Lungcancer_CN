@@ -100,3 +100,6 @@ function addVideoStream(id, stream, username) {
   videoContainer.appendChild(usernameLabel);
   document.getElementById('videoGrid').appendChild(videoContainer);
 }
+
+//new scrvideo.js
+//War and Peace
