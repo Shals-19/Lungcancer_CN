@@ -15,6 +15,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'landing.html'));
 });
 
+// Maintain a list of connected users for video streaming
+const videoUsers = new Map();
+
 // WebSocket connection handling
 io.on('connection', socket => {
   console.log('A user connected');
@@ -23,7 +26,6 @@ io.on('connection', socket => {
   socket.on('join-video-call', ({ username }) => {
     socket.broadcast.emit('user-joined', { username, id: socket.id });
   });
-
 
   // Handle WebRTC signaling
   socket.on('offer', data => socket.broadcast.emit('offer', data));
@@ -36,7 +38,40 @@ io.on('connection', socket => {
     socket.broadcast.emit('chat-message', { username, message });
   });
 
+  // Handle video stream joining
+  socket.on('join-video-stream', ({ username }) => {
+    console.log(`${username} joined the video stream`);
+
+    // Add the new user to the list
+    videoUsers.set(socket.id, username);
+
+    // Notify the new user about existing users
+    socket.emit('existing-video-users', Array.from(videoUsers.entries()));
+
+    // Notify other users about the new user
+    socket.broadcast.emit('user-joined-video', { username, id: socket.id });
+  });
+
+  // Handle video stream data
+  socket.on('video-stream', ({ id, stream }) => {
+    // Broadcast the video stream to all other users
+    socket.broadcast.emit('video-stream', { id, stream });
+  });
+
+  // Handle request for video streams from new users
+  socket.on('request-video-stream', ({ id }) => {
+    if (videoUsers.has(id)) {
+      const username = videoUsers.get(id);
+      socket.emit('user-joined-video', { username, id });
+    }
+  });
+
+  // Notify others when a user disconnects from video stream
   socket.on('disconnect', () => {
+    if (videoUsers.has(socket.id)) {
+      videoUsers.delete(socket.id);
+      socket.broadcast.emit('user-disconnected-video', { id: socket.id });
+    }
     console.log('A user disconnected');
   });
 });

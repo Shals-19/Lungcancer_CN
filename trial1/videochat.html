@@ -87,5 +87,44 @@
   <div id="videoGrid"></div>
   <script src="/socket.io/socket.io.js"></script>
   <script src="./scr_video.js"></script>
+  <script>
+    const socket = io();
+    const videoGrid = document.getElementById('videoGrid');
+
+    // Handle new user joining the video stream
+    socket.on('user-joined-video', ({ username, id }) => {
+      const videoContainer = document.createElement('div');
+      videoContainer.classList.add('videoContainer');
+      videoContainer.id = `video-${id}`;
+
+      const videoElement = document.createElement('video');
+      videoElement.autoplay = true;
+      videoElement.playsInline = true;
+
+      const usernameLabel = document.createElement('div');
+      usernameLabel.classList.add('username');
+      usernameLabel.textContent = username;
+
+      videoContainer.appendChild(videoElement);
+      videoContainer.appendChild(usernameLabel);
+      videoGrid.appendChild(videoContainer);
+    });
+
+    // Handle video stream data
+    socket.on('video-stream', ({ id, stream }) => {
+      const videoElement = document.querySelector(`#video-${id} video`);
+      if (videoElement) {
+        videoElement.srcObject = stream;
+      }
+    });
+
+    // Handle user disconnecting from video stream
+    socket.on('user-disconnected-video', ({ id }) => {
+      const videoContainer = document.getElementById(`video-${id}`);
+      if (videoContainer) {
+        videoContainer.remove();
+      }
+    });
+  </script>
 </body>
 </html>
