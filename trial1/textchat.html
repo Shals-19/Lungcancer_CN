@@ -67,17 +67,67 @@
     #sendMessage:hover {
       background-color: #45a049;
     }
+    /* New styles for the layout */
+    #participantsTile, #infoTile {
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #participantsTile {
+      width: 200px;
+      background: #e8f5e9;
+      margin-right: 20px;
+    }
+    #infoTile {
+      width: 250px;
+      background: #fffde7;
+      margin-left: 20px;
+    }
+    #participantsList {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+      text-align: left;
+    }
+    #dateTime {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    #quote {
+      font-style: italic;
+      color: #616161;
+      border-left: 4px solid #fbc02d;
+      padding-left: 10px;
+    }
   </style>
 </head>
 <body>
   <header>Text Chat</header>
-  <div id="chatContainer">
-    <div id="chatBox"></div>
-    <div id="messageInputContainer">
-      <input type="text" id="messageInput" placeholder="Type your message here..." />
-      <button id="sendMessage">Send</button>
+  <div style="display: flex; height: 100%;">
+    <!-- Participants Tile -->
+    <div id="participantsTile">
+      <h3 style="color: #388e3c; margin: 0 0 10px 0;">Participants</h3>
+      <ul id="participantsList"></ul>
+    </div>
+    <!-- Chat Box -->
+    <div id="chatContainer">
+      <div id="chatBox"></div>
+      <div id="messageInputContainer">
+        <input type="text" id="messageInput" placeholder="Type your message here..." />
+        <button id="sendMessage">Send</button>
+      </div>
+    </div>
+    <!-- Date/Time & Quote Tile -->
+    <div id="infoTile">
+      <h3 style="color: #fbc02d; margin: 0 0 10px 0;">Today</h3>
+      <div id="dateTime"></div>
+      <blockquote id="quote"></blockquote>
     </div>
   </div>
-  <script src="./scr_text.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./textchat.js"></script>
 </body>
 </html>
