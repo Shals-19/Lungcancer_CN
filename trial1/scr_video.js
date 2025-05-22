@@ -101,5 +101,68 @@ function addVideoStream(id, stream, username) {
   document.getElementById('videoGrid').appendChild(videoContainer);
 }
 
-//new scrvideo.js
-//War and Peace
+// Add event listeners for mute/unmute and camera buttons
+const muteButton = document.getElementById('muteButton');
+const unmuteButton = document.getElementById('unmuteButton');
+let cameraButton;
+
+function updateMuteButtons(isMuted) {
+  if (isMuted) {
+    muteButton.style.display = 'none';
+    unmuteButton.style.display = '';
+  } else {
+    muteButton.style.display = '';
+    unmuteButton.style.display = 'none';
+  }
+}
+
+function updateCameraButton(isCameraOn) {
+  if (cameraButton) {
+    cameraButton.textContent = isCameraOn ? 'Turn Camera Off' : 'Turn Camera On';
+    cameraButton.style.backgroundColor = isCameraOn ? '#d9534f' : '#5cb85c';
+  }
+}
+
+function toggleMic(mute) {
+  if (localStream) {
+    localStream.getAudioTracks().forEach(track => {
+      track.enabled = !mute;
+    });
+    updateMuteButtons(mute);
+  }
+}
+
+function toggleCamera() {
+  if (localStream) {
+    const videoTrack = localStream.getVideoTracks()[0];
+    if (videoTrack) {
+      videoTrack.enabled = !videoTrack.enabled;
+      updateCameraButton(videoTrack.enabled);
+    }
+  }
+}
+
+// Wait for DOMContentLoaded to add camera button
+window.addEventListener('DOMContentLoaded', () => {
+  const controls = document.getElementById('controls');
+  cameraButton = document.createElement('button');
+  cameraButton.id = 'cameraButton';
+  cameraButton.textContent = 'Turn Camera Off';
+  cameraButton.style.backgroundColor = '#d9534f';
+  cameraButton.style.color = 'white';
+  cameraButton.style.padding = '10px 20px';
+  cameraButton.style.fontSize = '16px';
+  cameraButton.style.border = 'none';
+  cameraButton.style.borderRadius = '5px';
+  cameraButton.style.cursor = 'pointer';
+  cameraButton.style.marginLeft = '10px';
+  controls.appendChild(cameraButton);
+
+  // Initial state
+  updateMuteButtons(false);
+  updateCameraButton(true);
+
+  muteButton.addEventListener('click', () => toggleMic(true));
+  unmuteButton.addEventListener('click', () => toggleMic(false));
+  cameraButton.addEventListener('click', toggleCamera);
+});
