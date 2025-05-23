@@ -29,6 +29,12 @@ setInterval(showDateTimeAndQuote, 60000); // update every minute
 sendMessage.addEventListener('click', () => {
   const message = messageInput.value.trim();
   if (message) {
+    // Show own message immediately
+    const msgElem = document.createElement('p');
+    msgElem.innerHTML = `<span class="username">You:</span> ${escapeHtml(message)}`;
+    chatBox.appendChild(msgElem);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    // Send to others
     socket.emit('chat-message', { username, message });
     messageInput.value = '';
   }
@@ -53,9 +59,18 @@ socket.on('chat-message', ({ username: sender, message }) => {
 let participants = [];
 function updateParticipantsList() {
   participantsList.innerHTML = '';
-  participants.forEach(name => {
+  participants.forEach(participant => {
+    // participant can be an object: { name, time }
+    let name, time;
+    if (typeof participant === 'object' && participant !== null && 'name' in participant && 'time' in participant) {
+      name = participant.name;
+      time = participant.time;
+    } else {
+      name = participant;
+      time = '';
+    }
     const li = document.createElement('li');
-    li.textContent = name;
+    li.innerHTML = `<span>${name}</span> <span style="color:#888; font-size:12px;">${time ? '(' + time + ')' : ''}</span>`;
     li.style.padding = '4px 0';
     li.style.color = name === username ? '#388e3c' : '#333';
     li.style.fontWeight = name === username ? 'bold' : 'normal';
@@ -63,8 +78,9 @@ function updateParticipantsList() {
   });
 }
 
-// Notify server of join
-socket.emit('join-text-chat', { username });
+// Notify server of join (send join time)
+const joinTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+socket.emit('join-text-chat', { username, time: joinTime });
 
 // Receive updated participants list
 socket.on('participants-update', (list) => {
