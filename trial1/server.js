@@ -18,6 +18,9 @@ app.get('/', (req, res) => {
 // Maintain a list of connected users for video streaming
 const videoUsers = new Map();
 
+// --- Text Chat Participants Logic ---
+const textChatParticipants = new Map();
+
 // WebSocket connection handling
 io.on('connection', socket => {
   console.log('A user connected');
@@ -66,11 +69,22 @@ io.on('connection', socket => {
     }
   });
 
+  // --- Text Chat Participants Join/Leave ---
+  socket.on('join-text-chat', ({ username, time }) => {
+    textChatParticipants.set(socket.id, { name: username, time });
+    io.emit('participants-update', Array.from(textChatParticipants.values()));
+  });
+
   // Notify others when a user disconnects from video stream
   socket.on('disconnect', () => {
     if (videoUsers.has(socket.id)) {
       videoUsers.delete(socket.id);
       socket.broadcast.emit('user-disconnected-video', { id: socket.id });
+    }
+    // Remove from text chat participants
+    if (textChatParticipants.has(socket.id)) {
+      textChatParticipants.delete(socket.id);
+      io.emit('participants-update', Array.from(textChatParticipants.values()));
     }
     console.log('A user disconnected');
   });
