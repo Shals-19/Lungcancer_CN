@@ -8,11 +8,12 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 // Serve the current directory for static files
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Serve landing.html as the default page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'landing.html'));
+  res.sendFile(path.join(__dirname,'public', 'landing.html'));
 });
 
 // Maintain a list of connected users for video streaming
@@ -92,4 +93,4 @@ io.on('connection', socket => {
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
