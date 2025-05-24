@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login / Signup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #575e68;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      background-color: rgb(236, 233, 233);
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 320px;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #3e7fc5;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .toggle-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    #login-form,
+    #signup-form {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <div class="toggle-buttons">
+      <button onclick="showLogin()">Login</button>
+      <button onclick="showSignup()">Signup</button>
+    </div>
+
+    <div id="login-form">
+      <h2>Login</h2>
+      <input type="text" id="login-username" placeholder="Username" required />
+      <input type="password" id="login-password" placeholder="Password" required />
+      <button onclick="login()">Login</button>
+    </div>
+
+    <div id="signup-form">
+      <h2>Signup</h2>
+      <input type="text" id="signup-username" placeholder="Username" required />
+      <input type="password" id="signup-password" placeholder="Password" required />
+      <button onclick="signup()">Signup</button>
+    </div>
+  </div>
+
+  <script src="client.js"></script>
+</body>
+</html>
