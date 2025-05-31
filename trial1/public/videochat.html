@@ -3,63 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Call</title>
+  <title>Video Call - ConnectX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at center, #1f1c2c, #928dab);
+      color: white;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      overflow: hidden;
+      position: relative;
     }
+    .stars, .glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    .stars {
+      background: url('https://assets.codepen.io/13471/stars.svg');
+      background-size: cover;
+      opacity: 0.1;
+      animation: twinkle 20s infinite linear;
+    }
+    .glow {
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 80px 80px;
+      animation: pulse 10s ease-in-out infinite;
+    }
+    @keyframes twinkle { 0% { background-position: 0 0; } 100% { background-position: 100% 100%; } }
+    @keyframes pulse { 0%, 100% { opacity: 0.04; } 50% { opacity: 0.1; } }
     header {
-      background-color: #4CAF50;
+      background: linear-gradient(to right, #ff758c, #ff7eb3);
       color: white;
-      padding: 10px;
+      padding: 15px;
       text-align: center;
-      font-size: 24px;
+      font-size: 2rem;
+      font-weight: 600;
+      z-index: 1;
+      animation: fadeInDown 1.2s ease-out;
     }
     #controls {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin: 10px 0;
+      gap: 20px;
+      padding: 20px;
+      z-index: 1;
     }
     #controls button {
-      padding: 10px 20px;
-      font-size: 16px;
+      padding: 12px 24px;
+      font-size: 1rem;
       border: none;
-      border-radius: 5px;
+      border-radius: 30px;
       cursor: pointer;
-    }
-    #muteButton {
-      background-color: #f0ad4e;
       color: white;
+      font-weight: bold;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
     }
-    #muteButton:hover {
-      background-color: #ec971f;
-    }
-    #unmuteButton {
-      background-color: #5bc0de;
-      color: white;
-    }
-    #unmuteButton:hover {
-      background-color: #31b0d5;
-    }
+    #muteButton { background: linear-gradient(135deg, #f0ad4e, #ec971f); }
+    #unmuteButton { background: linear-gradient(135deg, #5bc0de, #31b0d5); }
+    #controls button:hover { transform: scale(1.05); }
     #videoGrid {
       flex: 1;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
-      padding: 10px;
-      background-color: #f4f4f9;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      padding: 20px;
+      z-index: 1;
     }
     .videoContainer {
       position: relative;
-      background-color: black;
-      border-radius: 5px;
+      background-color: #000;
+      border-radius: 10px;
       overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
     .videoContainer video {
       width: 100%;
@@ -68,30 +89,33 @@
     }
     .username {
       position: absolute;
-      bottom: 5px;
-      left: 5px;
-      background-color: rgba(0, 0, 0, 0.5);
+      bottom: 6px;
+      left: 6px;
+      background: rgba(0, 0, 0, 0.5);
       color: white;
-      padding: 2px 5px;
-      border-radius: 3px;
-      font-size: 14px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.9rem;
     }
+    @keyframes fadeInDown { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
-  <header>Video Call</header>
+  <div class="stars"></div>
+  <div class="glow"></div>
+  <header>📹 Video Call</header>
   <div id="controls">
     <button id="muteButton">Mute</button>
     <button id="unmuteButton">Unmute</button>
   </div>
   <div id="videoGrid"></div>
+
   <script src="/socket.io/socket.io.js"></script>
   <script src="./scr_video.js"></script>
   <script>
     const socket = io();
     const videoGrid = document.getElementById('videoGrid');
 
-    // Handle new user joining the video stream
     socket.on('user-joined-video', ({ username, id }) => {
       const videoContainer = document.createElement('div');
       videoContainer.classList.add('videoContainer');
@@ -110,20 +134,14 @@
       videoGrid.appendChild(videoContainer);
     });
 
-    // Handle video stream data
     socket.on('video-stream', ({ id, stream }) => {
       const videoElement = document.querySelector(`#video-${id} video`);
-      if (videoElement) {
-        videoElement.srcObject = stream;
-      }
+      if (videoElement) videoElement.srcObject = stream;
     });
 
-    // Handle user disconnecting from video stream
     socket.on('user-disconnected-video', ({ id }) => {
       const videoContainer = document.getElementById(`video-${id}`);
-      if (videoContainer) {
-        videoContainer.remove();
-      }
+      if (videoContainer) videoContainer.remove();
     });
   </script>
 </body>
